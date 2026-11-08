@@ -19,10 +19,17 @@ public class EnemyAI : MonoBehaviour
 
     private Rigidbody2D rb;
     private float nextAttackTime;
+    private SpriteRenderer spriteRenderer;
+    private Color originalColor;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+        {
+            originalColor = spriteRenderer.color;
+        }
     }
 
     private void FixedUpdate()
@@ -83,9 +90,8 @@ public class EnemyAI : MonoBehaviour
             return;
 
         nextAttackTime = Time.time + attackCooldown;
-
+        AttackFeedback();
         health.TakeDamage(attackDamage);
-
         Debug.Log("Enemy menyerang Player!");
     }
 
@@ -97,4 +103,24 @@ public class EnemyAI : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
     }
+
+    private void AttackFeedback()
+    {  
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = Color.yellow;
+
+            CancelInvoke(nameof(ResetColor));
+            Invoke(nameof(ResetColor), 0.15f);
+        }
+    }
+
+    private void ResetColor()
+    {
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = originalColor;
+        }
+    }
+
 }
