@@ -54,9 +54,7 @@ public class RangedProjectile : MonoBehaviour
         {
             hasHit = true;
             rb.linearVelocity = Vector2.zero;
-
             health.TakeDamage(damage);
-
             Destroy(gameObject);
         }
     }
