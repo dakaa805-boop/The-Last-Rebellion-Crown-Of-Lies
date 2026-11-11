@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 2967186631900960071}
   - component: {fileID: 4311413680664523192}
   - component: {fileID: 1596714074636292562}
-  - component: {fileID: 2911695225033807525}
   - component: {fileID: 971476592026975788}
+  - component: {fileID: 2911695225033807525}
   - component: {fileID: 6631454543475457950}
   - component: {fileID: 7974385851940243657}
   m_Layer: 0
@@ -133,19 +133,6 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.5
---- !u!114 &2911695225033807525
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7187772594286696668}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7625a65289a7d3e4996fbb959266dfc7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
-  maxHealth: 30
 --- !u!50 &971476592026975788
 Rigidbody2D:
   serializedVersion: 5
@@ -173,6 +160,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &2911695225033807525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7187772594286696668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7625a65289a7d3e4996fbb959266dfc7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
+  maxHealth: 40
 --- !u!114 &6631454543475457950
 MonoBehaviour:
   m_ObjectHideFlags: 0

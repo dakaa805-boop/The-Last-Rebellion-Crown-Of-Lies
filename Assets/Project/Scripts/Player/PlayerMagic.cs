@@ -31,7 +31,7 @@ public class PlayerMagic : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log("PlayerMagic is running");
+        //Debug.Log("PlayerMagic is running");
 
         if (Input.GetKeyDown(KeyCode.F))
         {
