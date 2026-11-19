@@ -5,6 +5,10 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 {
     [SerializeField] private int maxHealth = 30;
 
+    [Header("Boss Settings")]
+    [SerializeField] private bool isBoss = false;
+    [SerializeField] private BossHealthBar bossHealthBar;
+
     private int currentHealth;
     private DamageFlash damageFlash;
     private SpriteRenderer spriteRenderer;
@@ -18,6 +22,11 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     {
         currentHealth = maxHealth;
 
+        if (isBoss && bossHealthBar != null)
+        {
+            bossHealthBar.SetHealth(currentHealth, maxHealth);
+        }
+
         damageFlash = GetComponent<DamageFlash>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         enemyAI = GetComponent<EnemyAI>();
@@ -25,25 +34,23 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         rb = GetComponent<Rigidbody2D>();
     }
 
-    public void TakeDamage(int damage)
-    {
-        if (isDead) return;
+public void TakeDamage(int damage)
+{
+    currentHealth -= damage;
+    currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
-        currentHealth -= damage;
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+    if (damageFlash != null)
+        damageFlash.Flash();
 
-        if (damageFlash != null)
-        {
-            damageFlash.Flash();
-        }
+    if (isBoss && bossHealthBar != null)
+        bossHealthBar.SetHealth(currentHealth, maxHealth);
 
-        Debug.Log(gameObject.name + " HP: " + currentHealth);
+    Debug.Log(gameObject.name + " menerima " + damage +
+              " damage. HP: " + currentHealth);
 
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
-    }
+    if (currentHealth <= 0)
+        Die();
+}
 
     private void Die()
     {

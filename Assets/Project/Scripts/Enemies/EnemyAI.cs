@@ -17,6 +17,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private int attackDamage = 10;
     [SerializeField] private float attackCooldown = 1.5f;
 
+
     private Rigidbody2D rb;
     private float nextAttackTime;
     private SpriteRenderer spriteRenderer;
@@ -95,6 +96,11 @@ public class EnemyAI : MonoBehaviour
         Debug.Log("Enemy menyerang Player!");
     }
 
+    public void SetTarget(Transform target)
+    {
+        player = target;
+    }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
@@ -105,7 +111,7 @@ public class EnemyAI : MonoBehaviour
     }
 
     private void AttackFeedback()
-    {  
+    {
         if (spriteRenderer != null)
         {
             spriteRenderer.color = Color.yellow;
@@ -122,5 +128,4 @@ public class EnemyAI : MonoBehaviour
             spriteRenderer.color = originalColor;
         }
     }
-
 }

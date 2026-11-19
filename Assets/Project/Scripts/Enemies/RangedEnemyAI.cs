@@ -111,4 +111,10 @@ public class RangedEnemyAI : MonoBehaviour
             Destroy(projectile);
         }
     }
+
+    public void SetTarget(Transform target)
+    {
+        player = target;
+    }
+
 }

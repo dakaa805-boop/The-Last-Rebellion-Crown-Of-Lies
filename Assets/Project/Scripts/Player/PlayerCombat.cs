@@ -43,7 +43,10 @@ public class PlayerCombat : MonoBehaviour
             playerController.FacingDirection * attackRange;
 
         Collider2D[] hitEnemies =
-            Physics2D.OverlapCircleAll(attackPosition, 0.5f);
+            Physics2D.OverlapCircleAll(attackPosition, 10.5f);
+         
+
+        // Debug.Log("Sword detected colliders: " + hitEnemies.Length);
 
         int totalDamage = attackDamage;
 
@@ -54,6 +57,8 @@ public class PlayerCombat : MonoBehaviour
 
         foreach (Collider2D enemy in hitEnemies)
         {
+            // Debug.Log("Sword detected: " + enemy.name);
+
             IDamageable target =
                 enemy.GetComponent<IDamageable>();
 
@@ -64,11 +69,14 @@ public class PlayerCombat : MonoBehaviour
 
             if (target != null)
             {
+                // Debug.Log("IDamageable found: " + enemy.name);
                 target.TakeDamage(totalDamage);
             }
+            else
+            {
+                // Debug.LogWarning("IDamageable NOT FOUND: " + enemy.name);
+            }
         }
-
-        Debug.Log("Sword Damage: " + totalDamage);
     }
 
     private void OnDrawGizmosSelected()
@@ -81,6 +89,7 @@ public class PlayerCombat : MonoBehaviour
             playerController.FacingDirection * attackRange;
 
         Gizmos.color = isInfused ? Color.cyan : Color.red;
-        Gizmos.DrawWireSphere(attackPosition, 0.5f);
+        Gizmos.DrawWireSphere(attackPosition, 10.5f);
+
     }
 }
