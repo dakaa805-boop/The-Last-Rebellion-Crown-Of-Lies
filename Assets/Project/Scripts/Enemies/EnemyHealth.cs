@@ -25,6 +25,14 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         if (isBoss && bossHealthBar != null)
         {
             bossHealthBar.SetHealth(currentHealth, maxHealth);
+
+            Debug.Log("Boss UI Updated: " + currentHealth + "/" + maxHealth);
+        }
+        else
+        {
+            Debug.LogWarning(
+                "Boss UI tidak terhubung! isBoss: " + isBoss
+            );
         }
 
         damageFlash = GetComponent<DamageFlash>();
@@ -33,6 +41,22 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         enemyCollider = GetComponent<Collider2D>();
         rb = GetComponent<Rigidbody2D>();
     }
+
+public void SetBossHealthBar(BossHealthBar healthBar)
+{
+    if (!isBoss) return;
+
+    bossHealthBar = healthBar;
+
+    if (bossHealthBar != null)
+    {
+        bossHealthBar.SetBossName(
+            gameObject.name.Replace("(Clone)", "").Trim()
+        );
+
+        bossHealthBar.SetHealth(currentHealth, maxHealth);
+    }
+}
 
 public void TakeDamage(int damage)
 {
@@ -53,22 +77,24 @@ public void TakeDamage(int damage)
 }
 
     private void Die()
-    {
-        if (isDead) return;
+{
+    if (isDead) return;
+    isDead = true;
 
-        isDead = true;
+    if (isBoss && bossHealthBar != null)
+        bossHealthBar.Hide();
 
-        if (enemyAI != null)
-            enemyAI.enabled = false;
+    if (enemyAI != null)
+        enemyAI.enabled = false;
 
-        if (enemyCollider != null)
-            enemyCollider.enabled = false;
+    if (enemyCollider != null)
+        enemyCollider.enabled = false;
 
-        if (rb != null)
-            rb.linearVelocity = Vector2.zero;
+    if (rb != null)
+        rb.linearVelocity = Vector2.zero;
 
-        StartCoroutine(DeathRoutine());
-    }
+    StartCoroutine(DeathRoutine());
+}
 
     private IEnumerator DeathRoutine()
     {
