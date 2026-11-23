@@ -1,9 +1,13 @@
+
 using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
     [SerializeField] private Transform target;
     [SerializeField] private float smoothSpeed = 8f;
+
+    private Vector3 followPosition;
+    private Vector3 shakeOffset;
 
     private void LateUpdate()
     {
@@ -15,10 +19,17 @@ public class CameraFollow : MonoBehaviour
             transform.position.z
         );
 
-        transform.position = Vector3.Lerp(
-            transform.position,
+        followPosition = Vector3.Lerp(
+            followPosition,
             targetPosition,
             smoothSpeed * Time.deltaTime
         );
+
+        transform.position = followPosition + shakeOffset;
+    }
+
+    public void SetShakeOffset(Vector3 offset)
+    {
+        shakeOffset = offset;
     }
 }
