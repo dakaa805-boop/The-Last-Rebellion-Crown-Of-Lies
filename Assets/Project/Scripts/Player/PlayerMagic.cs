@@ -26,6 +26,19 @@ public class PlayerMagic : MonoBehaviour
 
     public float CurrentMana => currentMana;
     public float MaxMana => maxMana;
+    public void RestoreMana(float amount)
+    {
+        if (amount <= 0)
+            return;
+
+        currentMana = Mathf.Clamp(
+            currentMana + amount,
+            0f,
+            maxMana
+        );
+
+        Debug.Log("Player Mana: " + currentMana);
+    }
 
     public bool IsInfused => Time.time < infusionEndTime;
 
