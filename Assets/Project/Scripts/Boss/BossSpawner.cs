@@ -7,12 +7,26 @@ public class BossSpawner : MonoBehaviour
     [SerializeField] private GameObject bossPrefab;
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private Transform player;
+ 
 
     [Header("Boss UI")]
     [SerializeField] private BossHealthBar bossHealthBar;
+    [SerializeField] private GameObject bossVictoryPanel;
+
+    [Header("Boss Reward")]
+    [SerializeField] private int bossGoldReward = 100;
 
     private GameObject spawnedBoss;
-    
+
+    private void Start()
+    {
+        if (bossVictoryPanel != null)
+            bossVictoryPanel.SetActive(false);
+
+        if (bossHealthBar != null)
+            bossHealthBar.Hide();
+    }
+
     public void SpawnBoss()
     {
         if (spawnedBoss != null) return;
@@ -45,16 +59,40 @@ public class BossSpawner : MonoBehaviour
 
         EnemyHealth bossHealth = spawnedBoss.GetComponent<EnemyHealth>();
 
-        if (bossHealth != null && bossHealthBar != null)
+        if (bossHealth != null)
         {
-            bossHealth.SetBossHealthBar(bossHealthBar);
+            Debug.Log("EnemyHealth found!");
+
+            if (bossHealthBar != null)
+            {
+                bossHealth.SetBossHealthBar(bossHealthBar);
+                bossHealthBar.Show();
+                Debug.Log("Health Bar assigned!");
+            }
+
+            if (bossVictoryPanel != null)
+            {
+                Debug.Log("Sending panel: " + bossVictoryPanel.name);
+
+                bossHealth.SetBossVictoryPanel(bossVictoryPanel);
+
+                Debug.Log("Victory Panel sent!");
+            }
+            else
+            {
+                Debug.LogError("BossSpawner Victory Panel is NULL!");
+            }
+
+            PlayerCurrency currency = player.GetComponent<PlayerCurrency>();
+
+            if (currency != null)
+            {
+                bossHealth.SetBossReward(currency, bossGoldReward);
+            }
         }
-        
-        if (bossHealthBar != null)
+        else
         {
-            bossHealthBar.Show();
+            Debug.LogError("EnemyHealth component not found on Boss!");
         }
-        
-        Debug.Log("Boss berhasil muncul!");
     }
 }

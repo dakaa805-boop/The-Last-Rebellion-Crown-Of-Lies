@@ -8,6 +8,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     [Header("Boss Settings")]
     [SerializeField] private bool isBoss = false;
     [SerializeField] private BossHealthBar bossHealthBar;
+    
 
     private int currentHealth;
     private DamageFlash damageFlash;
@@ -18,6 +19,10 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
     private bool isDead;
 
+    private GameObject bossVictoryPanel;
+    private PlayerCurrency playerCurrency;
+    private int bossGoldReward;
+
     private void Awake()
     {
         currentHealth = maxHealth;
@@ -25,14 +30,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         if (isBoss && bossHealthBar != null)
         {
             bossHealthBar.SetHealth(currentHealth, maxHealth);
-
-            Debug.Log("Boss UI Updated: " + currentHealth + "/" + maxHealth);
-        }
-        else
-        {
-            Debug.LogWarning(
-                "Boss UI tidak terhubung! isBoss: " + isBoss
-            );
         }
 
         damageFlash = GetComponent<DamageFlash>();
@@ -42,59 +39,118 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         rb = GetComponent<Rigidbody2D>();
     }
 
-public void SetBossHealthBar(BossHealthBar healthBar)
-{
-    if (!isBoss) return;
-
-    bossHealthBar = healthBar;
-
-    if (bossHealthBar != null)
+    public void SetBossHealthBar(BossHealthBar healthBar)
     {
-        bossHealthBar.SetBossName(
-            gameObject.name.Replace("(Clone)", "").Trim()
+        if (!isBoss) return;
+
+        bossHealthBar = healthBar;
+
+        if (bossHealthBar != null)
+        {
+            bossHealthBar.SetBossName(
+                gameObject.name.Replace("(Clone)", "").Trim()
         );
 
         bossHealthBar.SetHealth(currentHealth, maxHealth);
+        }
     }
-}
 
-public void TakeDamage(int damage)
-{
-    currentHealth -= damage;
-    currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+    public void SetBossVictoryPanel(GameObject panel)
+    {
+        Debug.Log("SetBossVictoryPanel called!");
 
-    if (damageFlash != null)
-        damageFlash.Flash();
+        if (!isBoss)
+        {
+            Debug.LogError("This enemy is not marked as Boss!");
+            return;
+        }
 
-    if (isBoss && bossHealthBar != null)
-        bossHealthBar.SetHealth(currentHealth, maxHealth);
+        bossVictoryPanel = panel;
 
-    Debug.Log(gameObject.name + " menerima " + damage +
+        Debug.Log("Received panel: " +
+            (bossVictoryPanel != null ? bossVictoryPanel.name : "NULL"));
+    }
+
+    public void SetBossReward(PlayerCurrency currency, int reward)
+    {
+        if (!isBoss) return;
+
+        playerCurrency = currency;
+        bossGoldReward = reward;
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
+        if (damageFlash != null)
+            damageFlash.Flash();
+
+        if (isBoss && bossHealthBar != null)
+            bossHealthBar.SetHealth(currentHealth, maxHealth);
+
+        Debug.Log(gameObject.name + " menerima " + damage +
               " damage. HP: " + currentHealth);
 
-    if (currentHealth <= 0)
-        Die();
-}
+        if (currentHealth <= 0)
+            Die();
+    }
 
     private void Die()
-{
-    if (isDead) return;
-    isDead = true;
+    {
+        if (isDead) return;
+        isDead = true;
 
-    if (isBoss && bossHealthBar != null)
-        bossHealthBar.Hide();
+        if (isBoss)
+        {
+            if (bossHealthBar != null)
+                bossHealthBar.Hide();
 
-    if (enemyAI != null)
-        enemyAI.enabled = false;
+            if (bossVictoryPanel != null)
+            {
+                bossVictoryPanel.SetActive(true);
 
-    if (enemyCollider != null)
-        enemyCollider.enabled = false;
+                Debug.Log("VICTORY PANEL ACTIVATED!");
+            }
+            else
+            {
+                Debug.LogError("BOSS VICTORY PANEL IS NULL!");
+            }
 
-    if (rb != null)
-        rb.linearVelocity = Vector2.zero;
+            Transform parent = bossVictoryPanel.transform.parent;
 
-    StartCoroutine(DeathRoutine());
-}
+            while (parent != null)
+            {
+                Debug.Log(
+                    parent.name + " Active: " + parent.gameObject.activeSelf
+                );
+
+                parent = parent.parent;
+            }
+
+            Debug.Log(
+                "Final Active In Hierarchy: " +
+                bossVictoryPanel.activeInHierarchy
+            );
+        }
+
+        if (playerCurrency != null)
+        {
+            playerCurrency.AddGold(bossGoldReward);
+        }
+
+        if (enemyAI != null)
+            enemyAI.enabled = false;
+
+        if (enemyCollider != null)
+            enemyCollider.enabled = false;
+
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
+
+        StartCoroutine(DeathRoutine());
+    }
 
     private IEnumerator DeathRoutine()
     {

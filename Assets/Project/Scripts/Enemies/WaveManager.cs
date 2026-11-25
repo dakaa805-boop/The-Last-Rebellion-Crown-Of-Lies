@@ -51,7 +51,7 @@ public class WaveManager : MonoBehaviour
             rect.pivot = new Vector2(1f, 1f);
 
             rect.anchoredPosition = new Vector2(-10f, 0f);
-            rect.sizeDelta = new Vector2(250f, 60f);
+            rect.sizeDelta = new Vector2(200f, 140f);
 
             waveText.alignment = TextAlignmentOptions.Right;
             waveText.fontSize = 28;
